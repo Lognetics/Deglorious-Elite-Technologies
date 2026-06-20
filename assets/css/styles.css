@@ -50,7 +50,7 @@ body {
   color: var(--ink);
   background: var(--bg);
   line-height: 1.65;
-  font-size: 17px;
+  font-size: 1.0625rem; /* 17px at 16px root; scales on mobile */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -145,9 +145,10 @@ p { color: var(--ink-soft); }
 
 .site-header {
   position: sticky; top: 0; z-index: 80;
-  background: rgba(255,255,255,0.86);
-  backdrop-filter: saturate(160%) blur(14px);
-  border-bottom: 1px solid transparent;
+  background: rgba(255,255,255,0.97);
+  /* NB: do not use backdrop-filter/filter/transform here — they would make the
+     header a containing block and trap the position:fixed mobile menu inside it. */
+  border-bottom: 1px solid var(--line);
   transition: box-shadow var(--t), border-color var(--t), background var(--t);
 }
 .site-header.scrolled { box-shadow: var(--shadow-sm); border-color: var(--line); }
@@ -165,6 +166,7 @@ p { color: var(--ink-soft); }
   content: ""; position: absolute; inset: 0;
   background: radial-gradient(60% 60% at 30% 20%, rgba(255,255,255,0.4), transparent 60%);
 }
+.brand__logo { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; display: block; }
 .brand__text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand__name { font-weight: 800; font-size: 1.06rem; color: var(--ink); letter-spacing: -0.01em; }
 .brand__tag { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); font-weight: 700; }
@@ -182,6 +184,7 @@ p { color: var(--ink-soft); }
 }
 .nav__cta { display: flex; align-items: center; gap: 10px; }
 @media (max-width: 1080px) { .nav__cta .btn--ghost { display: none; } }
+.nav__only-mobile { display: none; }
 
 .nav__toggle {
   display: none; width: 46px; height: 46px; border: 1px solid var(--line); background: #fff;
@@ -199,6 +202,10 @@ p { color: var(--ink-soft); }
 
 @media (max-width: 980px) {
   .nav__toggle { display: block; }
+  .nav__cta .btn { display: none; }          /* hide header CTAs; they live in the menu */
+  .nav__only-mobile { display: block; margin-top: 14px; padding: 0 4px; }
+  .nav__only-mobile + .nav__only-mobile { margin-top: 10px; }
+  .nav__only-mobile .btn { font-size: 1rem; }
   .nav__links {
     position: fixed; inset: 0 0 0 auto; width: min(82vw, 340px);
     background: var(--navy-900); color: #fff;
@@ -654,6 +661,13 @@ p { color: var(--ink-soft); }
   .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
   .wa-float::after { animation: none; }
+}
+
+/* ---------- Mobile typography: reduce all font sizes ~20% ---------- */
+@media (max-width: 600px) {
+  html { font-size: 80%; }                 /* every rem-based font shrinks 20% */
+  .brand__logo { width: 40px; height: 40px; }
+  .nav { min-height: 64px; }
 }
 
 /* utilities */
